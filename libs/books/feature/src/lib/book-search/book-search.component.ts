@@ -1,3 +1,4 @@
+import { debounceTime } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -19,7 +20,7 @@ import { Book } from '@tmo/shared/models';
 export class BookSearchComponent implements OnInit {
   books: ReadingListBook[];
   resultListBooks$: Observable<any>;
-
+  searchData: string;
   searchForm = this.fb.group({
     term: '',
   });
@@ -49,6 +50,13 @@ export class BookSearchComponent implements OnInit {
   searchBooks() {
     if (this.searchForm.value.term) {
       this.store.dispatch(searchBooks({ term: this.searchTerm }));
+    } else {
+      this.store.dispatch(clearSearch());
+    }
+  }
+  searchBooksReason() {
+    if (this.searchData !== '') {
+      this.store.dispatch(searchBooks({ term: this.searchData }));
     } else {
       this.store.dispatch(clearSearch());
     }

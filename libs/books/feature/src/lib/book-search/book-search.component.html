@@ -4,6 +4,8 @@
       autoFocus
       matInput
       type="search"
+      [(ngModel)]="searchData"
+      (keyup)="searchBooksReason()"
       placeholder="Search for books to add to your reading list"
       formControlName="term"
     />
