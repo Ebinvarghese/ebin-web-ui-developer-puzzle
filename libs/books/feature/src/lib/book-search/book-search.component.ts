@@ -1,4 +1,3 @@
-import { debounceTime } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -36,6 +35,11 @@ export class BookSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.resultListBooks$ = this.store.select(getAllBooks);
+    if (this.searchForm.get('term') != null) {
+      this.searchForm.get('term').valueChanges.subscribe((searchTerm) => {
+        this.store.dispatch(searchBooks({ term: searchTerm }));
+      });
+    }
   }
 
   addBookToReadingList(book: Book) {
@@ -50,13 +54,6 @@ export class BookSearchComponent implements OnInit {
   searchBooks() {
     if (this.searchForm.value.term) {
       this.store.dispatch(searchBooks({ term: this.searchTerm }));
-    } else {
-      this.store.dispatch(clearSearch());
-    }
-  }
-  searchBooksReason() {
-    if (this.searchData !== '') {
-      this.store.dispatch(searchBooks({ term: this.searchData }));
     } else {
       this.store.dispatch(clearSearch());
     }
