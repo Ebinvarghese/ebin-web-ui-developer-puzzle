@@ -1,3 +1,5 @@
+import { fakeAsync } from '@angular/core/testing';
+import { tick } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -19,8 +21,8 @@ describe('BooksEffects', () => {
       providers: [
         BooksEffects,
         provideMockActions(() => actions),
-        provideMockStore()
-      ]
+        provideMockStore(),
+      ],
     });
 
     effects = TestBed.inject(BooksEffects);
@@ -28,18 +30,17 @@ describe('BooksEffects', () => {
   });
 
   describe('loadBooks$', () => {
-    it('should work', done => {
+    it('should work', fakeAsync(() => {
       actions = new ReplaySubject();
       actions.next(BooksActions.searchBooks({ term: '' }));
 
-      effects.searchBooks$.subscribe(action => {
+      effects.searchBooks$.subscribe((action) => {
         expect(action).toEqual(
           BooksActions.searchBooksSuccess({ books: [createBook('A')] })
         );
-        done();
       });
-
+      tick(500);
       httpMock.expectOne('/api/books/search?q=').flush([createBook('A')]);
-    });
+    }));
   });
 });

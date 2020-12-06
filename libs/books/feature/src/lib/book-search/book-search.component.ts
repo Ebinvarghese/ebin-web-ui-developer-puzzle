@@ -19,7 +19,7 @@ import { Book } from '@tmo/shared/models';
 export class BookSearchComponent implements OnInit {
   books: ReadingListBook[];
   resultListBooks$: Observable<any>;
-
+  searchData: string;
   searchForm = this.fb.group({
     term: '',
   });
@@ -35,6 +35,11 @@ export class BookSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.resultListBooks$ = this.store.select(getAllBooks);
+    if (this.searchForm.get('term') != null) {
+      this.searchForm.get('term').valueChanges.subscribe((searchTerm) => {
+        this.store.dispatch(searchBooks({ term: searchTerm }));
+      });
+    }
   }
 
   addBookToReadingList(book: Book) {
